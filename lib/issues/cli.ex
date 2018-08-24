@@ -13,26 +13,6 @@ defmodule Issues.CLI do
     |> IO.inspect()
   end
 
-  def process(:help) do
-    IO.puts("""
-    usage: issues <user> <project> [count | #{@default_count}]
-    """)
-
-    System.halt(0)
-  end
-
-  def process({user, project, _count}) do
-    Issues.GithubIssues.fetch(user, project)
-    |> decode_response()
-  end
-
-  def decode_response({:ok, body}), do: body
-
-  def decode_response({:error, error}) do
-    IO.puts("Error fetching from Github: #{error[:reason]}")
-    System.halt(2)
-  end
-
   @doc """
   [-h | --help] | [github_user_name, github_project_name[, number_of_entries]]
 
@@ -63,5 +43,25 @@ defmodule Issues.CLI do
 
   def args_to_internal_representation(_) do
     :help
+  end
+
+  def process(:help) do
+    IO.puts("""
+    usage: issues <user> <project> [count | #{@default_count}]
+    """)
+
+    System.halt(0)
+  end
+
+  def process({user, project, _count}) do
+    Issues.GithubIssues.fetch(user, project)
+    |> decode_response()
+  end
+
+  def decode_response({:ok, body}), do: body
+
+  def decode_response({:error, error}) do
+    IO.puts("Error fetching from Github: #{error[:reason]}")
+    System.halt(2)
   end
 end
