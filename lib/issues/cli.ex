@@ -10,6 +10,7 @@ defmodule Issues.CLI do
     argv
     |> parse_args()
     |> process()
+    |> IO.inspect()
   end
 
   def process(:help) do
