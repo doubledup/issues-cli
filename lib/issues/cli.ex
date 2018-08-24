@@ -9,7 +9,7 @@ defmodule Issues.CLI do
   def run(argv) do
     argv
     |> parse_args()
-    |> process
+    |> process()
   end
 
   def process(:help) do

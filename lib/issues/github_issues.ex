@@ -5,7 +5,7 @@ defmodule Issues.GithubIssues do
   def fetch(user, project) do
     issues_url(user, project)
     |> HTTPoison.get(@user_agent)
-    |> handle_response
+    |> handle_response()
   end
 
   def issues_url(user, project) do
