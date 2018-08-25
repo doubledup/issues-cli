@@ -10,7 +10,8 @@ defmodule Issues.CLI do
     argv
     |> parse_args()
     |> process()
-    |> IO.inspect()
+    |> format()
+    |> IO.puts()
   end
 
   @doc """
@@ -70,5 +71,41 @@ defmodule Issues.CLI do
   def sort_into_descending_order(list_of_issues) do
     list_of_issues
     |> Enum.sort(&(&1["created_at"] >= &2["created_at"]))
+  end
+
+  def format(list_of_issues) do
+    heading = [
+      Enum.join(
+        [
+          String.pad_trailing("#", max_length_of_field(list_of_issues, "number")),
+          String.pad_trailing("created_at", max_length_of_field(list_of_issues, "created_at")),
+          String.pad_trailing("title", max_length_of_field(list_of_issues, "title"))
+        ],
+        " | "
+      ),
+      Enum.join(
+        [
+          String.duplicate("-", max_length_of_field(list_of_issues, "number")),
+          String.duplicate("-", max_length_of_field(list_of_issues, "created_at")),
+          String.duplicate("-", max_length_of_field(list_of_issues, "title"))
+        ],
+        "-+-"
+      )
+    ]
+
+    list_of_issues
+    |> Enum.map(&"#{&1["number"]} | #{&1["created_at"]} | #{&1["title"]}")
+    |> (&(heading ++ &1)).()
+    |> Enum.join("\n")
+  end
+
+  defp max_length_of_field(map, field) do
+    map
+    |> Enum.map(
+      &(&1[field]
+        |> Kernel.to_string()
+        |> String.length())
+    )
+    |> Enum.max()
   end
 end
