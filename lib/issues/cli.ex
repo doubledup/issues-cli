@@ -10,7 +10,6 @@ defmodule Issues.CLI do
     argv
     |> parse_args()
     |> process()
-    |> format()
     |> IO.puts()
   end
 
@@ -59,6 +58,7 @@ defmodule Issues.CLI do
     |> decode_response()
     |> sort_into_descending_order()
     |> Enum.take(count)
+    |> format_for_columns(["number", "created_at", "title"])
   end
 
   def decode_response({:ok, body}), do: body
@@ -73,34 +73,57 @@ defmodule Issues.CLI do
     |> Enum.sort(&(&1["created_at"] >= &2["created_at"]))
   end
 
-  def format(list_of_issues) do
-    heading = [
-      Enum.join(
-        [
-          String.pad_trailing("#", max_length_of_field(list_of_issues, "number")),
-          String.pad_trailing("created_at", max_length_of_field(list_of_issues, "created_at")),
-          String.pad_trailing("title", max_length_of_field(list_of_issues, "title"))
-        ],
-        " | "
-      ),
-      Enum.join(
-        [
-          String.duplicate("-", max_length_of_field(list_of_issues, "number")),
-          String.duplicate("-", max_length_of_field(list_of_issues, "created_at")),
-          String.duplicate("-", max_length_of_field(list_of_issues, "title"))
-        ],
-        "-+-"
-      )
-    ]
+  def format_for_columns(list_of_issues, headings) do
+    column_widths =
+      for heading <- headings do
+        max_length_of_field(list_of_issues, heading)
+      end
 
-    list_of_issues
-    |> Enum.map(&"#{&1["number"]} | #{&1["created_at"]} | #{&1["title"]}")
-    |> (&(heading ++ &1)).()
-    |> Enum.join("\n")
+    column_widths =
+      column_widths
+      |> Enum.zip(headings)
+      |> Enum.map(fn {width, heading} -> Kernel.max(width, heading |> String.length()) end)
+
+    IO.inspect(column_widths)
+
+    heading =
+      Enum.zip(headings, column_widths)
+      |> Enum.map(fn {heading, width} -> String.pad_trailing(heading, width) end)
+      |> Enum.join(" | ")
+
+    separator =
+      column_widths
+      |> Enum.map(&String.duplicate("-", &1))
+      |> Enum.join("-+-")
+
+    rows =
+      list_of_issues
+      |> extract_row_values(headings)
+      |> Enum.map(fn row ->
+        row
+        |> Enum.zip(column_widths)
+        |> Enum.map(fn {value, width} ->
+          value
+          |> Kernel.to_string()
+          |> String.pad_trailing(width)
+        end)
+        |> Enum.join(" | ")
+      end)
+      |> Enum.join("\n")
+
+    Enum.join([heading, separator, rows], "\n")
   end
 
-  defp max_length_of_field(map, field) do
-    map
+  defp extract_row_values(maps, headings) do
+    for map <- maps do
+      for heading <- headings do
+        map[heading]
+      end
+    end
+  end
+
+  defp max_length_of_field(list_of_maps, field) do
+    list_of_maps
     |> Enum.map(
       &(&1[field]
         |> Kernel.to_string()
