@@ -58,7 +58,7 @@ defmodule Issues.CLI do
     |> decode_response()
     |> sort_into_descending_order()
     |> Enum.take(count)
-    |> format_for_columns(["number", "created_at", "title"])
+    |> format_for_columns(["number", "created_at", "title", "html_url"])
   end
 
   def decode_response({:ok, body}), do: body
