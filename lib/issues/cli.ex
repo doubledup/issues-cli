@@ -84,8 +84,6 @@ defmodule Issues.CLI do
       |> Enum.zip(headings)
       |> Enum.map(fn {width, heading} -> Kernel.max(width, heading |> String.length()) end)
 
-    IO.inspect(column_widths)
-
     heading =
       Enum.zip(headings, column_widths)
       |> Enum.map(fn {heading, width} -> String.pad_trailing(heading, width) end)
