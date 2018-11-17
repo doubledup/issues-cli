@@ -18,8 +18,8 @@ defmodule Issues.CLI do
 
   If `argv` contains -h or --help, returns :help.
 
-  If `argv` contains 2 or 3 non-switch strings, these should be a github
-  username, project name and an optional number of entries to format.
+  If `argv` contains 2 or 3 strings that aren't switches, these should be a
+  github username, project name and an optional number of entries to format.
 
   Otherwise this returns :help
   """
