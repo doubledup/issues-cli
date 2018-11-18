@@ -2,8 +2,6 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :issues, github_url: "https://api.github.com"
-
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
@@ -24,6 +22,7 @@ config :issues, github_url: "https://api.github.com"
 #
 
 config :logger, compile_time_purge_level: :info
+config :issues, github_url: "https://api.github.com"
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
