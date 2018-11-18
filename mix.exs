@@ -4,11 +4,13 @@ defmodule Issues.MixProject do
   def project do
     [
       app: :issues,
-      escript: escript_config(),
-      version: "0.1.0",
+      deps: deps(),
       elixir: "~> 1.7.4",
+      escript: escript_config(),
+      name: "Issues CLI",
+      source_url: "https://github.com/doubledup/issues-cli",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      version: "0.1.0",
     ]
   end
 
