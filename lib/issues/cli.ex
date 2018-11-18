@@ -79,15 +79,7 @@ defmodule Issues.CLI do
         max_length_of_field(list_of_issues, heading)
       end
 
-    column_widths =
-      column_widths
-      |> Enum.zip(headings)
-      |> Enum.map(fn {width, heading} -> Kernel.max(width, heading |> String.length()) end)
-
-    heading =
-      Enum.zip(headings, column_widths)
-      |> Enum.map(fn {heading, width} -> String.pad_trailing(heading, width) end)
-      |> Enum.join(" | ")
+    heading = render_row(headings, column_widths)
 
     separator =
       column_widths
@@ -96,37 +88,39 @@ defmodule Issues.CLI do
 
     rows =
       list_of_issues
-      |> extract_row_values(headings)
-      |> Enum.map(fn row ->
-        row
-        |> Enum.zip(column_widths)
-        |> Enum.map(fn {value, width} ->
-          value
-          |> Kernel.to_string()
-          |> String.pad_trailing(width)
-        end)
-        |> Enum.join(" | ")
-      end)
+      |> extract_issue_data(headings)
+      |> Enum.map(&(render_row(&1, column_widths)))
       |> Enum.join("\n")
 
     Enum.join([heading, separator, rows], "\n")
-  end
-
-  defp extract_row_values(maps, headings) do
-    for map <- maps do
-      for heading <- headings do
-        map[heading]
-      end
-    end
   end
 
   defp max_length_of_field(list_of_maps, field) do
     list_of_maps
     |> Enum.map(
       &(&1[field]
-        |> Kernel.to_string()
-        |> String.length())
+        |> Kernel.to_string
+        |> String.length)
     )
-    |> Enum.max()
+    |> Enum.max
+    |> Kernel.max(String.length(field))
+  end
+
+  defp render_row(fields, column_widths) do
+    Enum.zip(fields, column_widths)
+    |> Enum.map(fn {field, width} ->
+      field
+      |> Kernel.to_string
+      |> String.pad_trailing(width)
+    end)
+    |> Enum.join(" | ")
+  end
+
+  defp extract_issue_data(maps, headings) do
+    for map <- maps do
+      for heading <- headings do
+        map[heading]
+      end
+    end
   end
 end
