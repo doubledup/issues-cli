@@ -23,9 +23,9 @@ defmodule CLITest do
       ["c", "a", "b"]
       |> fake_created_at_list
       |> sort_into_descending_order
+      |> Enum.map(&Map.get(&1, "created_at"))
 
-    created_at_values = Enum.map(result, &Map.get(&1, "created_at"))
-    assert created_at_values == ~w{c b a}
+    assert result == ~w{c b a}
   end
 
   defp fake_created_at_list(values) do
