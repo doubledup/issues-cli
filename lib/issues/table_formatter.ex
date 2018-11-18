@@ -29,7 +29,7 @@ defmodule Issues.TableFormatter do
         |> String.length)
     )
     |> Enum.max
-    |> Kernel.max(String.length(field))
+    |> Kernel.max(field |> to_string |> String.length)
   end
 
   defp render_row(fields, column_widths) do
