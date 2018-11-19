@@ -1,21 +1,30 @@
 # Issues
 
-**TODO: Add description**
+CLI for pulling issues from Github.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `issues` to your list of dependencies in `mix.exs`:
+With [Elixir](https://elixir-lang.org/) installed, run:
 
-```elixir
-def deps do
-  [
-    {:issues, "~> 0.1.0"}
-  ]
-end
+```shell
+mix deps.get
+mix escript.build
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/issues](https://hexdocs.pm/issues).
+## Running
 
+To fetch the last 10 issues from the Elixir Github repo:
+
+```shell
+./issues elixir-lang elixir 10
+```
+
+The arguments are passed like this:
+
+```shell
+issues <github user> <github project> [<number of issues>]
+```
+
+## Documentation
+
+Generate docs with `mix docs` and browse them at `docs/index.html`.
