@@ -1,4 +1,12 @@
 defmodule Issues.TableFormatter do
+  @doc """
+  Format issues with headings.
+
+  iex> Issues.TableFormatter.format_for_columns(
+  ...>  [[title: "no_tests", body: "need more assertions"], [title: "debugger_is_cool", body: "`break!` is fun!"]],
+  ...>  [:title, :body])
+  "title            | body                \n-----------------+---------------------\nno_tests         | need more assertions\ndebugger_is_cool | `break!` is fun!    "
+  """
   def format_for_columns(list_of_issues, headings) do
     column_widths =
       for heading <- headings do
